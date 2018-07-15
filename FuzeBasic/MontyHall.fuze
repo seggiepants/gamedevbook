@@ -1,0 +1,105 @@
+// MONTY HALL PROBLEM
+// ==================
+// Suppose you're on a game show, and you're given the choice of three doors: 
+// Behind one door is a car; behind the others, goats. You pick a door, say No. 1, 
+// and the host, who knows what's behind the doors, opens another door, say No. 3, 
+// which has a goat. He then says to you, "Do you want to pick door No. 2?" 
+// Is it to your advantage to switch your choice?
+
+NumRepetitions = 10000
+WinSwitch = 0
+WinStay = 0
+
+// Make room for the results
+FOR i = 1 TO 6 LOOP
+	PRINT
+REPEAT
+
+// Remember where the results should print on the console
+x = 0
+y = VTAB
+y = y - 6
+PROC SetupGamePads
+FOR i = 1 TO NumRepetitions LOOP
+	// Choose which door has the money and which the "player" chose
+	PrizeDoor = Rnd(3)
+	ChosenDoor = Rnd(3)
+	
+	// Figure out the door for the game show host to reveal
+	RevealedDoor = Rnd(3)
+	WHILE RevealedDoor = PrizeDoor OR RevealedDoor = ChosenDoor LOOP
+		RevealedDoor = RevealedDoor + 1
+		IF RevealedDoor >= 3 THEN
+			RevealedDoor = 0
+		ENDIF
+	REPEAT
+	
+	// Now get the door that wasn't chosen or revealed. Start at zero and count until we arent a chosen/revealed door
+	RemainingDoor = 0
+	WHILE RemainingDoor = ChosenDoor OR RemainingDoor = RevealedDoor LOOP
+		RemainingDoor = RemainingDoor + 1
+	REPEAT
+	
+	IF PrizeDoor = ChosenDoor THEN
+		WinStay = WinStay + 1
+	ELSE
+		IF PrizeDoor = RemainingDoor THEN
+			WinSwitch = WinSwitch + 1
+		ENDIF
+	ENDIF
+	PROC ShowResults(x, y, WinStay, WinSwitch, i)
+	
+	IF FN IsButtonPressed() THEN 
+		BREAK
+	ENDIF
+REPEAT
+
+PRINT
+PRINT "DONE. Total Repetitions = "; i
+// Truthfully I didn't really need to calculate the revealed or remaining door, but that kind of gives away the answer if I don't.
+END
+
+// Show the results of the simulation so far
+DEF PROC ShowResults(x, y, CountStay, CountSwitch, Count)
+	LOCAL currentPaper
+	HVTAB(x, y)
+	PRINT "Results"
+	PRINT "=================================================="
+	PRINT "Stay with original door: ";((CountStay * 100.0)/ Count);"% (";CountStay;")      "
+	PRINT "Switch door: ";((CountSwitch * 100.0)/ Count);"% (";CountSwitch;")      "
+	PRINT // Lets draw a graph of the results somewhat like a progress bar, this general idea works for life bars in a text game.
+	currentPaper = PAPER
+	PAPER = BRIGHTGREEN
+	PRINT SPACE$((CountStay * 50)/Count);
+	PAPER = MAROON
+	PRINT SPACE$((CountSwitch * 50)/Count);
+	PAPER = currentPaper // Change the background color back to normal
+ENDPROC
+
+// Setup the gamepads to be read. We don't want to do this every time we look for a button press
+DEF PROC SetupGamePads()
+	LOCAL i
+	FOR i = 0 TO NUMGAMEPADS - 1 LOOP
+		SETUPGAMEPAD(i)
+	REPEAT
+ENDPROC
+
+// Check to see if any gamepad buttons have been clicked or if a keyboard key has been pressed
+// Returns 1 if true, and 0 if nothing has been clicked/pressed. 
+DEF FN IsButtonPressed()
+	LOCAL i, j, retVal
+	
+	retVal = 0
+	FOR j = 0 TO NUMGAMEPADS - 1 LOOP
+		FOR i = 0 TO NUMBUTTONS(j) LOOP
+			IF GETBUTTON(j, i) != 0 THEN
+				retVal = 1
+				BREAK
+			ENDIF
+		REPEAT
+	REPEAT
+	
+	IF INKEY <> -1 THEN
+		retVal = 1
+	ENDIF
+=retVal
