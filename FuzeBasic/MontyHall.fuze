@@ -80,17 +80,17 @@ ENDPROC
 DEF FN IsButtonPressed()
 	LOCAL i, j, retVal
 	
-	retVal = 0
+	retVal = FALSE
 	FOR j = 0 TO NUMGAMEPADS - 1 LOOP
 		FOR i = 0 TO NUMBUTTONS(j) LOOP
 			IF GETBUTTON(j, i) != 0 THEN
-				retVal = 1
+				retVal = TRUE
 				BREAK
 			ENDIF
 		REPEAT
 	REPEAT
 	
 	IF INKEY <> -1 THEN
-		retVal = 1
+		retVal = TRUE
 	ENDIF
 =retVal
