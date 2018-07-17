@@ -1,0 +1,153 @@
+// Guess the Number
+// 
+// Lines that start with REM or two forward slashes are a comment.
+// Comments let you add information to your code that explains how or why things
+// work the way they do. You can also leave notes for yourself. You should use comments
+// frequently. It is a good idea to have a header before each function or procedure with comments.
+// In other versions of BASIC, comments can start with a single quote. Fuze BASIC doesn't work that way.
+//
+// This game is really more of a reference than a game. It shows how to declare and use both a 
+// function and procedure. It shows you how to use FOR, REPEAT, and WHILE loops. It also shows
+// you how to construct an IF/THEN/ELSE conditional. Please refer to this later if you need a refresher.
+
+// When we call a procedure or function we need to preface the call with either FN or PROC.
+PROC ShowTitle()
+
+// Not the use of $ on user_name$. It says it is a string. Unfortunately we can't declare global variables except
+// for arrays (more on arrays later). We just start using the variable.
+INPUT "What is your name? ", user_name$
+
+// Note the use of ; to print out two items one after another. A ; at the end of the call will stop the print 
+// command from moving to the next line.
+PRINT "Welcome, "; user_name$; " it is time to play Number Guess."
+
+maximum_tries = 5
+maximum_value = 10
+
+PRINT "I am thinking of a number between 1 and ";maximum_value
+PRINT "You have "; maximum_tries; " to guess what it is."
+PRINT
+
+// RND will give you a random number between 0 and the number passed in minus one.
+// we use INT to ensure it is a whole number, then add 1 so we start at 1 instead of 0.
+target_value = INT(RND(maximum_value)) + 1
+
+// How many times we tried to guess the number.
+tries = 0
+
+// Are we done with the game? We use the TRUE and FALSE constants to say if it is a TRUE or FALSE statement.
+game_over = FALSE
+
+// This is an example of a WHILE loop. Because we check the loop condition first, we may never go into
+// the loop if the condition is not TRUE.
+WHILE NOT game_over LOOP
+	// Run this loop until game over.
+	
+	// Call our function below to get the user's next guess.
+	// Noted that the variable name passed in doesn't match the name in the function declaration.
+	// They don't need to. In fact you could pass in a plain number that isn't a variable at all.
+	// Fuze BASIC will handle the details for you.
+	current_guess = FN PromptNumber(maximum_value)
+	
+	// This is an if/then/else conditional. If something is true you do one thing. If not, we carry out
+	// the else part. The else part is optional.
+	IF current_guess = target_value THEN
+		PRINT "Congratulations, You WIN!!"
+		game_over = TRUE
+	ELSE
+		// Fuze BASIC doesn't have an ELSEIF statement, so we will have to make due with 
+		// nesting IF statements within each other (you can do that). If we were testing for
+		// one of a set number of values we would use the SWITCH statement instead.
+		IF current_guess < target_value THEN
+			PRINT "Too low"
+		ELSE
+			// Only one option left, too high.
+			PRINT "Too high"
+		ENDIF
+		tries = tries + 1
+		IF tries >= maximum_tries THEN
+			PRINT "Too many guesses, GAME OVER!"
+			game_over = TRUE
+		ENDIF
+	ENDIF
+REPEAT
+
+PRINT "Thank you for playing"
+
+// Finish with an END call so that Fuze BASIC doesn't try to run procedure or function definitions.
+// Function and procedure definitions should follow the END statement.
+END
+
+// This function will prompt for a number. It will continue to prompt until you enter a number between 1 and the 
+// max_value passed in. max_value is a parameter to the function. You can have multiple parameters to a function or
+// none at all. If you have many they will be separated by commas. For string parameters the parameter name should
+// end with a $.
+//
+// This is small enough it doesn't really need a function, I just wanted to show you what one looks like.
+DEF FN PromptNumber(max_value)
+	// LOCAL creates a local variable that is visible to just this function/procedure.
+	// If you were at the top of the code at the global scope you can't see this variable.
+	// You could even have another variable with the same name at the global scope. Outside of this function
+	// you would see the global one, but in this function you see only the local one. This helps make code more
+	// portable as you don't have to worry about a name colliding with another higher up in the code.
+	// It is best to keep global variables to a minimum and only use global variables when necessary.
+	LOCAL num
+	
+	// Here we have a REPEAT UNTIL loop. The program will always go through the loop at least once.
+	// We say that it is a bottom tested loop as it checks to see if it should loop at the bottom of the block.
+	LOOP
+		INPUT "What is your guess? ", num
+	REPEAT UNTIL (num >= 1 AND num <= max_value)
+	
+	// Unlike other C-style languages or other BASIC variants you use the = sign and a value to return a value for
+	// the function back to the caller. (Other languages would use the RETURN keyword). 
+	// Functions always return a value. Use a procedure if you don't have a value to return.
+=num
+
+// This is a procedure. It is different from a function because it doesn't return a value. You use ENDPROC to 
+// complete the procedure definition. 
+// Like a function you can pass in parameters. In this example, we don't. Both functions and procedures should 
+// follow the code at the global scope. You will get errors if you put the functions or procedures first.
+//
+// Again, I am largely making this a procedure to show you the syntax.
+DEF PROC ShowTitle()
+	LOCAL x, message$
+	// We want to print the name of the game centered. I don't want to type out the title twice so we put the 
+	// value in a string. Notice the $ at the end of the variable message$. This says it is a string, not a number.
+	// TWIDTH is built in to FUZE Basic and tells us how many characters wide the screen is. With a little math
+	// we can tell how far over to move to print the text centered.
+	message$ = "N U M B E R  G U E S S"
+	x = (TWIDTH - LEN(message$)) / 2
+	
+	// CLS will clear the screen and move the cursor to location 0, 0.
+	CLS
+	
+	// Before we write out the text, lets change the Background and Foreground colors using PAPER and INK
+	// BLUE, WHITE, and BLACK are constants built into Fuze BASIC
+	PAPER = BLUE
+	INK = WHITE
+	
+	// PRINTAT is like PRINT only you can tell the cursor where to start printing out text.
+	// If your command ends with a ;, it won't move to the next line, otherwise it will.
+	// 
+	// HTAB and VTAB can be used to get the cursors current position. Here we use HTAB because we only need
+	// the Y Coordinate. We calculated the X Coordinate previously.
+	PRINTAT(x, VTAB); message$
+	
+	// print out a separator line.
+	// This a FOR loop example. Use this kind of loop when you want to run a loop a set number of times.
+	// Here we want to write out a character for each column of the screen. 
+	// We reuse our x variable as a counter here.
+	// Note the -1 after TWIDTH. The range is 0 to TWIDTH - 1, not 0 to TWIDTH as that would actually be 
+	// TWIDTH + 1 characters.
+	FOR x = 0 TO TWIDTH - 1 LOOP
+		PRINT "=";
+	REPEAT
+	
+	// Now change the colors back
+	PAPER = BLACK
+	INK = WHITE	
+	
+	// If you call PRINT without parameters, it will just write out a blank line.
+	PRINT	
+ENDPROC
