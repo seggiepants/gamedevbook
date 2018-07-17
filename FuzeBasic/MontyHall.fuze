@@ -6,9 +6,9 @@
 // which has a goat. He then says to you, "Do you want to pick door No. 2?" 
 // Is it to your advantage to switch your choice?
 
-NumRepetitions = 10000
-WinSwitch = 0
-WinStay = 0
+num_repetitions = 10000
+win_switch = 0
+win_stay = 0
 
 // Make room for the results
 FOR i = 1 TO 6 LOOP
@@ -20,26 +20,26 @@ x = 0
 y = VTAB
 y = y - 6
 PROC SetupGamePads
-FOR i = 1 TO NumRepetitions LOOP
+FOR i = 1 TO num_repetitions LOOP
 	// Choose which door has the money and which the "player" chose
-	PrizeDoor = Rnd(3)
-	ChosenDoor = Rnd(3)
+	prize_door = Rnd(3)
+	chosen_door = Rnd(3)
 	
 	// Figure out the door for the game show host to reveal
-	RevealedDoor = Rnd(3)
-	WHILE RevealedDoor = PrizeDoor OR RevealedDoor = ChosenDoor LOOP
-		RevealedDoor = RevealedDoor + 1
-		IF RevealedDoor >= 3 THEN
-			RevealedDoor = 0
+	revealed_door = Rnd(3)
+	WHILE revealed_door = prize_door OR revealed_door = chosen_door LOOP
+		revealed_door = revealed_door + 1
+		IF revealed_door >= 3 THEN
+			revealed_door = 0
 		ENDIF
 	REPEAT
 	
-	IF PrizeDoor = ChosenDoor THEN
-		WinStay = WinStay + 1
+	IF prize_door = chosen_door THEN
+		win_stay = win_stay + 1
 	ELSE
-		WinSwitch = WinSwitch + 1
+		win_switch = win_switch + 1
 	ENDIF
-	PROC ShowResults(x, y, WinStay, WinSwitch, i)
+	PROC ShowResults(x, y, win_stay, win_switch, i)
 	
 	IF FN IsButtonPressed() THEN 
 		BREAK
@@ -51,20 +51,20 @@ PRINT "DONE. Total Repetitions = "; i
 END
 
 // Show the results of the simulation so far
-DEF PROC ShowResults(x, y, CountStay, CountSwitch, Count)
-	LOCAL currentPaper
+DEF PROC ShowResults(x, y, count_stay, count_switch, count)
+	LOCAL current_paper
 	HVTAB(x, y)
 	PRINT "Results"
 	PRINT "=================================================="
-	PRINT "Stay with original door: ";((CountStay * 100.0)/ Count);"% (";CountStay;")      "
-	PRINT "Switch door: ";((CountSwitch * 100.0)/ Count);"% (";CountSwitch;")      "
+	PRINT "Stay with original door: ";((count_stay * 100.0)/ count);"% (";count_stay;")      "
+	PRINT "Switch door: ";((count_switch * 100.0)/ count);"% (";count_switch;")      "
 	PRINT // Lets draw a graph of the results somewhat like a progress bar, this general idea works for life bars in a text game.
-	currentPaper = PAPER
+	current_paper = PAPER
 	PAPER = BRIGHTGREEN
-	PRINT SPACE$((CountStay * 50)/Count);
+	PRINT SPACE$((count_stay * 50)/count);
 	PAPER = MAROON
-	PRINT SPACE$((CountSwitch * 50)/Count);
-	PAPER = currentPaper // Change the background color back to normal
+	PRINT SPACE$((count_switch * 50)/count);
+	PAPER = current_paper // Change the background color back to normal
 ENDPROC
 
 // Setup the gamepads to be read. We don't want to do this every time we look for a button press
@@ -78,19 +78,19 @@ ENDPROC
 // Check to see if any gamepad buttons have been clicked or if a keyboard key has been pressed
 // Returns 1 if true, and 0 if nothing has been clicked/pressed. 
 DEF FN IsButtonPressed()
-	LOCAL i, j, retVal
+	LOCAL i, j, ret_val
 	
-	retVal = FALSE
+	ret_val = FALSE
 	FOR j = 0 TO NUMGAMEPADS - 1 LOOP
 		FOR i = 0 TO NUMBUTTONS(j) LOOP
 			IF GETBUTTON(j, i) != 0 THEN
-				retVal = TRUE
+				ret_val = TRUE
 				BREAK
 			ENDIF
 		REPEAT
 	REPEAT
 	
 	IF INKEY <> -1 THEN
-		retVal = TRUE
+		ret_val = TRUE
 	ENDIF
-=retVal
+=ret_val
