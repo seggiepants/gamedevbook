@@ -14,7 +14,8 @@
 PROC ShowTitle()
 
 // Not the use of $ on user_name$. It says it is a string. Unfortunately we can't declare global variables except
-// for arrays (more on arrays later). We just start using the variable.
+// for arrays (more on arrays later). Once you set a variable to a value, you can just start using it. Fuze BASIC
+// will complain if you try to compare a variable to a value before you set the variable to something.
 INPUT "What is your name? ", user_name$
 
 // Note the use of ; to print out two items one after another. A ; at the end of the call will stop the print 
