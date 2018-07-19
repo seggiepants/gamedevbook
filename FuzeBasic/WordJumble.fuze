@@ -1,0 +1,108 @@
+num_words = 25
+DIM word$(num_words)
+
+// Initialize our data
+// Calling RESTORE will make sure we start reading from the first data statement in the code.
+RESTORE		
+FOR i = 0 TO num_words - 1 LOOP
+	READ word$(i)
+REPEAT
+
+// Print the title
+PRINT "W O R D  J U M B L E"
+PRINT "===================="
+
+game_over = FALSE
+WHILE NOT game_over LOOP
+	// Choose a random word
+	original_word$ = FN UpperCase(word$(RND(num_words)))
+	// We start with a copy of the original then start swapping letters
+	scrambled_word$ = original_word$
+
+	// Now scramble the word.
+	// Swap characters around at least 20 times. More if it is a long word.
+	FOR i = 0 to MAX(LEN(original_word$), 20) - 1 LOOP
+		scrambled_word$ = FN CharacterSwap(scrambled_word$)
+	REPEAT
+	
+	tries_remaining = 6
+	guessed_word$ = ""
+	
+	WHILE guessed_word$ <> original_word$ AND tries_remaining > 0 LOOP 
+		PRINT
+		PRINT "Can you unscramble: " + scrambled_word$
+		INPUT "What is the original word? ", guessed_word$
+		guessed_word$ = FN UpperCase(guessed_word$)
+		tries_remaining = tries_remaining - 1
+	REPEAT
+	
+	IF tries_remaining = 0 AND guessed_word$ <> original_word$ THEN
+		PRINT
+		PRINT "I am sorry, you ran out of guesses."
+		PRINT "The word was: " + original_word$
+	ELSE 
+		PRINT
+		PRINT "CONGRATULATIONS!"
+		PRINT "The word was: " + original_word$ + ". You guessed correctly."
+	ENDIF
+	
+	LOOP
+		PRINT 
+		INPUT "Would you like to play again? (Y/N) ", choice$
+		choice$ = FN UpperCase(choice$)
+	REPEAT UNTIL choice$ = "Y" OR choice$ = "N" OR choice$ = "YES" OR choice$ = "NO"
+	
+	IF choice$ = "N" OR choice$ = "NO" THEN
+		game_over = TRUE
+	ENDIF
+	
+REPEAT
+
+END
+
+// Return a copy of the given string with two characters swapped.
+DEF FN CharacterSwap(value$)
+	LOCAL ret$, x, y
+	
+	LOOP
+		x = RND(LEN(value$))
+		y = RND(LEN(value$))
+	REPEAT UNTIL x <> y
+	
+	IF x > y THEN
+		// SWAP will switch the value of two variables.
+		SWAP(x, y)
+	ENDIF
+	
+	// LEFT$ - Get characters at the start of a string.
+	// MID$ - Get characters in the middle of a string.
+	// RIGHT$ - Get characters at the end of a string.
+	ret$ = LEFT$(value$, x) 							// Characters before the swap.
+	ret$ = ret$ + MID$(value$, y, 1)					// First swapped character
+	ret$ = ret$ + MID$(value$, x + 1, y - x - 1) 		// Characters between the swap
+	ret$ = ret$ + MID$(value$, x, 1)					// Second swapped character
+	ret$ = ret$ + RIGHT$(value$, LEN(value$) - y - 1) 	// Characters after the swap
+= ret$
+
+// Return a given string in all upper case.
+DEF FN UpperCase(msg$)
+	LOCAL i, ch$, ret$
+ 
+	ret$ = ""
+ 
+	FOR i = 0 TO LEN(msg$) - 1 LOOP
+		// Here we rely on the upper case alphabet being numerically after the lower case alphabet.
+		ch$ = MID$(msg$, i, 1)
+		IF ASC(ch$) >= ASC("a") AND ASC(ch$) <= ASC("z") THEN
+			ret$ = ret$ + CHR$(ASC("A") - ASC("a") + ASC(ch$))
+		ELSE
+			ret$ = ret$ + ch$
+		ENDIF
+	REPEAT
+ = ret$
+
+DATA "DINOSAUR", "ZEBRA", "LIZARD", "HORSE", "MOOSE"
+DATA "RAKE", "WATER", "CLEAN", "SEED", "PICK"
+DATA "WATER", "BREAD", "FRUIT", "BUTTER", "MILK"
+DATA "SCHOOL", "WORK", "HOME", "CASTLE", "BOAT"
+DATA "PHONE", "COMPUTER", "BOOK", "GAME", "RADIO"
