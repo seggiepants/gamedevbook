@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Monty Hall Problem</title>
+<script type="text/javascript" src="MontyHall.js"></script>
+<link rel="stylesheet" type="text/css" href="MontyHall.css">
+</head>
+<body>
+<p><h1><a href="https://en.wikipedia.org/wiki/Monty_Hall_problem">The Monty Hall Problem</a></h1></p>
+<p>
+Suppose you're on a game show, and you're 
+given the choice of three doors. Behind one door is a car; behind the others, goats. 
+You pick a door, say No. 1, and the host, who knows what's behind the doors, opens 
+another door, say No. 3, which has a goat. He then says to you, "Do you want to 
+pick door No. 2?" Is it to your advantage to switch doors? Lets run a simulation 
+to find out.
+</p>
+<!-- We are going to hide the results area until we start a simulation the first time.
+It just looks a bit odd otherwise. You can hide and show sections of the html dynamically 
+from JavaScript.
+-->
+<div id="results" style="display:none">
+<hr />
+<h2>Results</h2>
+<hr />
+<p>
+<div><span>Stay with original door: </span><span id="doorStay">--</span></div>
+<div><span>Switch door: </span><span id="doorSwitch">--</span></div>
+<progress id="barGraph" value="0" max="100"></progress>
+</p>
+</div>
+<!-- This uses a style in the linked CSS instead of setting it manually with the 
+style property like we did for the results pane. It is normally better to do 
+things this way. I wanted to show both for this sample.
+-->
+<div class="centered">
+<button id = "startButton" onClick="StartSimulation()">Start</button>
+</div>
+</body>
+</html>
