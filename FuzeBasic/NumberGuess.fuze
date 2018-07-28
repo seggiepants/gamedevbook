@@ -13,9 +13,9 @@
 // When we call a procedure or function we need to preface the call with either FN or PROC.
 PROC ShowTitle()
 
-// Not the use of $ on user_name$. It says it is a string. Unfortunately we can't declare global variables except
-// for arrays (more on arrays later). Once you set a variable to a value, you can just start using it. Fuze BASIC
-// will complain if you try to compare a variable to a value before you set the variable to something.
+// Note the use of $ on user_name$. It says it is a string. Unfortunately we can't declare global variables except
+// for arrays (more on arrays later). Once you set a variable to a value, you can just start using it. However, 
+// Fuze BASIC will complain if you try to compare a variable to a value before you set the variable to something.
 INPUT "What is your name? ", user_name$
 
 // Note the use of ; to print out two items one after another. A ; at the end of the call will stop the print 
@@ -45,8 +45,8 @@ WHILE NOT game_over LOOP
 	// Run this loop until game over.
 	
 	// Call our function below to get the user's next guess.
-	// Noted that the variable name passed in doesn't match the name in the function declaration.
-	// They don't need to. In fact you could pass in a plain number that isn't a variable at all.
+	// Note that the variable name passed in doesn't have to match the name in the function declaration.
+	// In fact you could pass in a plain number that isn't a variable at all.
 	// Fuze BASIC will handle the details for you.
 	current_guess = FN PromptNumber(maximum_value)
 	
