@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Word Jumble</title>
+<script type="text/javascript" src="WordJumble.js"></script>
+<link rel="stylesheet" type="text/css" href="WordJumble.css">
+</head>
+<body>
+<p><h1>Word Jumble</h1></p>
+<hr />
+<p>
+Unscramble a word. You only have a few tries to get it right.
+</p>
+<div id="start" class="visible">
+<button id="firstGame" onclick="NewGame()">Play</button>
+</div>
+<div id="game" class="hidden">
+<div id="jumbledWord" class="jumble">blah</div>
+<div>
+<input id="guessText" type="text" size="30" onkeypress="CheckGuess(event)">
+<button onclick="Guess()">Guess</button>
+</div>
+</div>
+<div id="message" class="message"></div>
+<div id="restart" class="hidden">
+<button id = "newGame" onclick="NewGame()">New Game</button>
+</div>
+</body>
+</html>

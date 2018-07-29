@@ -1,0 +1,29 @@
+div.centered
+{
+	text-align: center;
+	margin: auto;
+}
+
+div.jumble
+{
+	text-transform: uppercase;
+	text-shadow: 2px 2px Gray;
+	font-size: xx-large;
+	font-weight: bold;
+	font-family: "arial", serif;
+}
+
+div.hidden
+{
+	display: none;
+}
+
+div.visible
+{
+	display: block;
+}
+
+div.message
+{
+	background-color: lightyellow;
+}
