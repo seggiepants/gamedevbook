@@ -26,7 +26,7 @@ maximum_tries = 5
 maximum_value = 10
 
 PRINT "I am thinking of a number between 1 and ";maximum_value
-PRINT "You have "; maximum_tries; " to guess what it is."
+PRINT "You have "; maximum_tries; " tries to guess what it is."
 PRINT
 
 // RND will give you a random number between 0 and the number passed in minus one.
