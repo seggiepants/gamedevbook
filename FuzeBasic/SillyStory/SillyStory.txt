@@ -28,4 +28,4 @@ Unfortunately #Enemy# arrived in a #Vehicle# and stole the book.
 
 With the book back, #Name# can continue working on a #Goal#.
 
-Maybe the #Goal# will be incorporate #Enemy#s.
+Maybe the #Goal# will incorporate #Enemy#s.
