@@ -1,0 +1,172 @@
+// Silly Story
+//
+// Ask the user a for a bunch of words, then make a silly story out of them.
+// There must be a text file named "SillyStory.txt" in the same directory for 
+// the program to work.
+//
+// The first line of the file is the number of words we will ask the user for.
+// After that for each word, we have a phrase to search for in the text followed 
+// by a colon(:) and a prompt to the user to enter a word for that search.
+// Once we have finished all of the words to ask for, we have the story. The story
+// will be searched for the special keys we entered in the file, and those keys will
+// be replaced with the value entered for that key by the user. 
+// 
+// Finally we print out the result with hopefully hilarious results.
+//
+
+record$ = ""	// Looks like line$ was taken.
+num_entries = 0
+
+// OPEN will open the file.
+handle = OPEN("text/SillyStory.txt")
+
+// Read in a row. This may crash if it isn't a number.
+INPUT# handle, num_entries
+
+// Allocate arrays for the Search, Replace, and Prompt values now that we know
+// how big they should be.
+DIM search_text$(num_entries)
+DIM replace_text$(num_entries)
+DIM hint_text$(num_entries)
+
+// For each entry, split it on the first colon(:) before is the search text, after is the 
+// phrase to prompt with.
+FOR i = 0 TO num_entries - 1 LOOP
+	INPUT# handle, record$
+	FOR j = 0 TO LEN(record$) - 1 LOOP
+		IF (MID$(record$, j, 1) = ":") THEN
+			search_text$(i) = LEFT$(record$, j)
+			hint_text$(i) = MID$(record$, j + 1, LEN(record$) - j - 1)
+			BREAK
+		ENDIF
+	REPEAT
+REPEAT
+
+// Write out a welcome message for the user.
+PRINT "WELCOME TO SILLY STORY"
+PRINT "PLEASE ANSWER THE QUESTIONS, AND A SILLY STORY"
+PRINT "WILL BE MADE FOR YOUR AMUSEMENT."
+PRINT 
+PRINT "LETS BEGIN..."
+PRINT
+
+// Ask for the words we want to replace in the output.
+FOR i = 0 TO num_entries - 1 LOOP
+	//PRINT STR$(i) + ": " + search_text$(i) + " -> " + hint_text$(i)
+	PRINT hint_text$(i)
+	INPUT replace$
+	replace_text$(i)	= replace$
+	PRINT 
+REPEAT
+
+// That was long and tedious, thank the user for their patience.
+PRINT 
+PRINT "THANK YOU FOR YOUR PATIENCE. NOW FOR YOUR SILLY STORY."
+PRINT
+
+// EOF(handle) will tell use when we reach the end of the file.
+WHILE NOT EOF(handle) LOOP
+	INPUT# handle, record$
+	PROC PrettyPrint(FN SearchReplace(record$))
+REPEAT
+
+// Remember to always close your file when you are done with it.
+CLOSE(handle)
+
+// End of the program.
+END
+
+// SearchReplace
+// Parameters:
+// text$: The line to search and replace over.
+// Use the global search_text$ and replace_text$ arrays to search for and replace
+// values in the given text$. Returning the result to the user.
+//
+// Notice how the inner loop goes from the end to the beginning. This is because the
+// length of the line may change as you search and replace things. Easier to loop 
+// backward than try to keep track of where to continue from.
+//
+// Returns: 
+// Modified copy of the input text$ with the search/replace performed.
+//
+DEF FN SearchReplace(text$)
+	LOCAL i
+	LOCAL j
+	LOCAL ret$
+	ret$ = text$
+	FOR j = 0 TO num_entries - 1 LOOP
+		IF LEN(search_text$(j)) <= LEN(ret$) THEN
+			FOR i = LEN(ret$) - LEN(search_text$(j)) TO 0 STEP -1 LOOP
+				IF MID$(ret$, i, LEN(search_text$(j))) = search_text$(j) THEN
+					ret$ = LEFT$(ret$, i) + replace_text$(j) + RIGHT$(ret$, LEN(ret$) - i - LEN(search_text$(j)))
+				ENDIF
+			REPEAT
+		ENDIF
+	REPEAT
+=ret$
+
+// A small function to tell you if a given string is filled with whitespace (spaces or tabs)
+// only or not.
+// text$: The string to check.
+// 
+// Returns:
+// True if all whitespace and False otherwise.
+//
+DEF FN IsWhiteSpace(text$)
+	LOCAL i
+	LOCAL ret
+	LOCAL ch$
+	
+	ret = True
+	FOR i = 0 TO LEN(text$) - 1 LOOP
+		ch$ = MID$(text$, i, 1)
+		// CHR$(9) = TAB, there are others we may want to add.
+		IF (ch$ <> " ") AND (ch$ <> CHR$(9))THEN
+			ret = False
+			BREAK
+		ENDIF
+	REPEAT
+=ret
+
+// Print out a text string to the console trying to word wrap on word boundaries.
+// Parameters:
+// text$: The text to print to the screen.
+//
+// When we switch to/from whitespace, that marks the beginning or end of a word
+// check if it will fit on the line. If so, print it out. If not print a new line
+// then print it out. Have to do one last check after the loop. If the text is 
+// empty just print a blank line. I didn't want to have indexing errors on an 
+// empty line.
+//
+// NOTE: TWIDTH is built in and gives you the width of the screen in characters.
+// Likewise HTAB will let you know where you are on the screen along the width.
+//
+DEF PROC PrettyPrint(text$)
+	LOCAL current_white_space
+	LOCAL next_white_space
+	LOCAL text_start
+	
+	IF LEN(text$) >= 1 THEN
+		text_start = 0
+		current_white_space = FN IsWhiteSpace(LEFT$(text$, 1))
+		FOR i = 1 TO LEN(text$) - 1 LOOP
+			next_white_space = FN IsWhiteSpace(MID$(text$, i, 1))
+			IF next_white_space <> current_white_space THEN
+				// Finish off a word.
+				IF HTAB + i - text_start >= TWIDTH THEN
+					PRINT 
+				ENDIF
+				// Semicolon (;) at the end supresses a new line.
+				PRINT MID$(text$, text_start, i - text_start);
+				text_start = i
+			ENDIF
+			current_white_space = next_white_space
+		REPEAT
+		IF HTAB + i - text_start >= TWIDTH THEN
+			PRINT 
+		ENDIF
+		PRINT MID$(text$, text_start, LEN(text$) - text_start)
+	ELSE
+		PRINT
+	ENDIF
+ENDPROC

@@ -1,0 +1,27 @@
+13
+#Adj1#:Please type in an adjective.
+#Verb1#:Can I get a verb ending in ing.
+#Adj2#:I need another adjective.
+#NounP1#:A plural noun please.
+#Adj3#:I need yet another adjective please.
+#Place1#:Please enter a place.
+#NounS1#:Can I get a singluar noun.
+#Adj4#:Can I have yet another adjective.
+#NounS2#:Type in another singular noun.
+#Obj1#:Now I need a random object.
+#Adj5#:One more adjective please, almost done.
+#NounP2#:I still need a noun.
+#Adj6#:Another adjective, the last one I promise.
+The World is being invaded by #Adj1# #NounP1#
+==================================
+Help screamed the #Adj2# #NounS1#, we are being invaded by #Adj1# #NounP1#! They are #Verb1# everywhere!
+
+"I can stop the #Adj1# #NounP1#!", exclaimed the #Adj3# #NounS2#. I have a #Obj1#!
+
+The #Obj1# was made by #NounP2# in #Adj4# #Place1#. It is #Adj5#!
+
+That won't work complained the #Adj2# #NounS1#, your #Obj1# is too #Adj6#!
+
+The #Adj3# #NounS2#, looked at the #Obj1#. You are right #Adj2# #NounS1#.
+
+Now we are doomed for sure.

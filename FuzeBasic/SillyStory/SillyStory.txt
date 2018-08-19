@@ -1,0 +1,31 @@
+11
+#Name#:Please type in a person's name.
+#Adj1#:Can you enter an adjective
+#Adj2#:I need another adjective
+#Noun1#:Type in a Noun
+#Verb1#:How about a verb
+#Goal#:I need yet another Noun
+#Book#:Please enter the name of a book
+#Enemy#:Now I need an Unpleasant Noun
+#Vehicle#:Another Noun please
+#Adj3#:One more adjective pretty please
+#Noun2#:Another Noun, last one.
+There once was a #Adj1# #Adj2# person named #Name#.
+
+#Name# wants to learn how to make #Goal#s.
+
+In order to figure out how, #Name# decides to read the book "#Book#".
+
+"#Book#" teaches you how to write #Noun1#s and #Verb1# text.
+
+#Name# is glad to have the book "#Book#".
+
+Unfortunately #Enemy# arrived in a #Vehicle# and stole the book.
+
+#Name# had to get a trusty #Noun2# to chase the #Enemy#s.
+
+#Name# caught up to them. Then #Name# beat up the #Enemy#s.
+
+With the book back, #Name# can continue working on a #Goal#.
+
+Maybe the #Goal# will be incorporate #Enemy#s.
