@@ -1,0 +1,15 @@
+<h2>The World is being invaded by #Adj1# #NounP1#</h2>
+<hr>
+<p>
+Help screamed the #Adj2# #NounS1#, we are being invaded by #Adj1# #NounP1#! They are #Verb1# everywhere!
+</p><p>
+"I can stop the #Adj1# #NounP1#!", exclaimed the #Adj3# #NounS2#. I have a #Obj1#!
+</p><p>
+The #Obj1# was made by #NounP2# in #Adj4# #Place1#. It is #Adj5#!
+</p><p>
+That won't work complained the #Adj2# #NounS1#, your #Obj1# is too #Adj6#!
+</p><p>
+The #Adj3# #NounS2#, looked at the #Obj1#. You are right #Adj2# #NounS1#.
+</p><p>
+Now we are <strong>doomed</strong> for sure.
+</p>

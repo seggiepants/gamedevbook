@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Silly Story</title>
+<script type="text/javascript" src="SillyStory.js"></script>
+<link rel="stylesheet" type="text/css" href="SillyStory.css">
+</head>
+<body onload="LoadGame()">
+<p><h1>Silly Story</h1></p>
+<div>
+Choose your story: 
+<select id="chooseStory" onchange="LoadGame()">
+<option value="SillyStory.json">Stop Theif</option>
+<option value="SillyStory_Invasion.json">Invasion</option>
+</select>
+</div>
+
+<div id="main" class="story"></div>
+</body>
+</html>
