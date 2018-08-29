@@ -1,0 +1,18 @@
+{
+"file":"story/SillyStory_Invasion.txt"
+, "data":[
+	{ "search":"#Adj1#", "prompt":"Please type in an adjective." }
+	, {"search":"#Verb1#", "prompt":"Can I get a verb ending in ing." }
+	, {"search":"#Adj2#", "prompt":"I need another adjective." }
+	, {"search":"#NounP1#", "prompt":"A plural noun please." }
+	, {"search":"#Adj3#", "prompt":"I need yet another adjective please." }
+	, {"search":"#Place1#", "prompt":"Please enter a place." }
+	, {"search":"#NounS1#", "prompt":"Can I get a singluar noun." }
+	, {"search":"#Adj4#", "prompt":"Can I have yet another adjective." }
+	, {"search":"#NounS2#", "prompt":"Type in another singular noun." }
+	, {"search":"#Obj1#", "prompt":"Now I need a random object." }
+	, {"search":"#Adj5#", "prompt":"One more adjective please, almost done." }
+	, {"search":"#NounP2#", "prompt":"I still need a noun." }
+	, {"search":"#Adj6#", "prompt":"Another adjective, the last one I promise." }
+	]
+}

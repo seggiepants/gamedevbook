@@ -1,0 +1,20 @@
+<p>There once was a #Adj1# #Adj2# person named #Name#.
+</p><p>
+#Name# wants to learn how to make #Goal#s.
+</p><p>
+In order to figure out how, #Name# decides to read the book "#Book#".
+</p><p>
+"#Book#" teaches you how to write #Noun1#s and #Verb1# text.
+</p><p>
+#Name# is glad to have the book "#Book#".
+</p><p>
+Unfortunately #Enemy# arrived in a #Vehicle# and stole the book.
+</p><p>
+#Name# had to get a trusty #Noun2# to chase the #Enemy#s.
+</p><p>
+#Name# caught up to them. Then #Name# beat up the #Enemy#s.
+</p><p>
+With the book back, #Name# can continue working on a #Goal#.
+</p><p>
+Maybe the #Goal# will incorporate #Enemy#s.
+</p>

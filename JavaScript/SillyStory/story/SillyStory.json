@@ -1,0 +1,16 @@
+{
+"file":"story/SillyStory.txt"
+, "data":[
+	{ "search":"#Name#", "prompt":"Please type in a person's name." }
+	, {"search":"#Adj1#", "prompt":"Can you enter an adjective" }
+	, {"search":"#Adj2#", "prompt":"I need another adjective" }
+	, {"search":"#Noun1#", "prompt":"Type in a Noun" }
+	, {"search":"#Verb1#", "prompt":"How about a verb" }
+	, {"search":"#Goal#", "prompt":"I need yet another Noun" }
+	, {"search":"#Book#", "prompt":"Please enter the name of a book" }
+	, {"search":"#Enemy#", "prompt":"Now I need an Unpleasant Noun" }
+	, {"search":"#Vehicle#", "prompt":"Another Noun please" }
+	, {"search":"#Adj3#", "prompt":"One more adjective pretty please" }
+	, {"search":"#Noun2#", "prompt":"Another Noun, last one." }
+	]
+}
