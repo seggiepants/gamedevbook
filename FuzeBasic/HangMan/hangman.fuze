@@ -1,0 +1,432 @@
+// HANGMAN
+// -------
+
+NUM_CHARS = 26
+MAX_WORDS = 100
+DIM FLAGS(NUM_CHARS)
+DIM WORDS$(MAX_WORDS)
+
+NUM_WORDS = FN LOAD_WORDS("words.txt", MAX_WORDS)
+TARGET_WORD$ = ""
+NUM_MISSES = 0
+END_GAME = FALSE
+EXIT_GAME = FALSE
+
+// Main game loop. Outer loop is for replaying a game as many times as you want. Inner is for a single game.
+WHILE NOT EXIT_GAME LOOP
+	PROC NEW_GAME()
+	WHILE NOT END_GAME LOOP
+		PROC DRAW_STATUS()	
+		PRINTAT(30, 24); "PLEASE GUESS A LETTER: "
+		LOOP
+			INPUT_OK = FALSE
+			LOOP
+				LETTER = INKEY
+			REPEAT UNTIL LETTER != -1
+			IF LETTER >= ASC("a") AND LETTER <= ASC("z") THEN
+				LETTER = LETTER - ASC("a")
+				INPUT_OK = (FLAGS(LETTER) = 0)
+			ELSE
+				IF LETTER >= ASC("A") AND LETTER <= ASC("Z") THEN
+					LETTER = LETTER - ASC("A")
+					INPUT_OK = (FLAGS(LETTER) = 0)
+				ENDIF
+			ENDIF				
+		REPEAT UNTIL INPUT_OK
+		FLAGS(LETTER) = 1
+		IF FN IS_WORD_GUESSED() THEN
+			END_GAME = TRUE
+		ELSE
+			IF NOT FN IS_MATCHING_LETTER(CHR$(LETTER + ASC("A"))) THEN
+				NUM_MISSES = NUM_MISSES + 1
+				IF NUM_MISSES >= 6 THEN
+					END_GAME = TRUE
+				ENDIF
+			ENDIF		
+		ENDIF	
+	REPEAT
+
+	PROC DRAW_STATUS()	
+	IF FN IS_WORD_GUESSED() THEN
+		// YOU WIN
+		MESSAGE$ = "YOU WIN! THE WORD WAS '" + TARGET_WORD$ + "'"
+		PROC SOUND_WIN()
+	ELSE
+		// YOU LOST
+		MESSAGE$ = "SORRY, YOU LOST. THE WORD WAS '" + TARGET_WORD$ + "'"
+		PROC SOUND_LOSE()
+	ENDIF
+	
+	// PLAY AGAIN
+	IF NOT FN PLAY_AGAIN(MESSAGE$) THEN
+		EXIT_GAME = TRUE
+	ENDIF
+	
+REPEAT
+
+END
+
+// Draw the hangman. You get a little bit of difference when the hangman has been hanged.
+//PARAMETERS:
+//X: X-COORDINATE TO START PRINTING AT
+//Y: Y-COORDINATE TO START PRINTING AT
+//MISSED_LETTERS: How many letters have been a miss so far. The hanging is complete at 6: Head, Body, Arm, Arm, Leg, Leg
+DEF PROC DRAW_HANGMAN(X, Y, MISSED_LETTERS)
+	LOCAL I, X1, Y1
+	
+	// GALLOWS
+	PRINTAT(X, Y);   "  XXXXXXXXXXXXXXXXXXXXX" // 21
+	PRINTAT(X, Y + 1); "  XX          |"
+	FOR I = 1 TO 20 LOOP
+		PRINTAT(X, Y + I + 1); "  XX"
+	REPEAT
+	PRINTAT(X, Y + 21); "XXXXXXXXXXXXXXXXXXXXXX" // 22
+	PRINTAT(X, Y + 22); "XXXXXXXXXXXXXXXXXXXXXX" // 22
+	// HEAD
+	IF (MISSED_LETTERS >= 1) THEN
+		X1 = X + 11
+		Y1 = Y + 2
+		PRINTAT(X1, Y1); "+-----+"
+		Y1 = Y1 + 1
+		IF (MISSED_LETTERS >= 6) THEN
+			PRINTAT(X1, Y1); "| X X |"
+		ELSE
+			PRINTAT(X1, Y1);"| O O |"
+		ENDIF
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1);"|  L  |"
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1);"| --- |"
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1);"+-----+"
+	ENDIF
+	
+	// BODY
+	IF (MISSED_LETTERS >= 2) THEN
+		X1 = X + 11
+		Y1 = Y + 7
+		IF (MISSED_LETTERS >= 6) THEN
+			PRINTAT(X1, Y1); "  |Z|  "
+		ELSE
+			PRINTAT(X1, Y1); "  | |  "
+		ENDIF
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); "+-----+"
+		Y1 = Y1 + 1
+		FOR I = 1 TO 3 LOOP
+			PRINTAT(X1, Y1); "|     |"
+			Y1 = Y1 + 1
+		REPEAT
+		PRINTAT(X1, Y1); "+-----+"
+	ENDIF
+	
+	// LEFT ARM
+	IF (MISSED_LETTERS >= 3) THEN
+		X1 = X + 8
+		Y1 = Y + 8
+		PRINTAT(X1, Y1); "+-+"
+		Y1 = Y1 + 1
+		FOR I = 1 TO 4 LOOP
+		PRINTAT(X1, Y1); "| |"
+		Y1 = Y1 + 1
+		REPEAT
+		PRINTAT(X1, Y1); "+-+"	
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); " W\"
+	ENDIF
+	
+	// RIGHT ARM
+	IF (MISSED_LETTERS >= 4) THEN
+		X1 = X + 18
+		Y1 = Y + 8
+		PRINTAT(X1, Y1); "+-+"
+		Y1 = Y1 + 1
+		FOR I = 1 TO 4 LOOP
+			PRINTAT(X1, Y1); "| |"
+			Y1 = Y1 + 1
+		REPEAT
+		PRINTAT(X1, Y1); "+-+"	
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); "/W "
+	ENDIF
+	
+	// LEFT LEG
+	IF (MISSED_LETTERS >= 5) THEN
+		X1 = X + 11
+		Y1 = Y + 13 
+		FOR I = 1 TO 4 LOOP
+			PRINTAT(X1, Y1); " | |"
+			Y1 = Y1 + 1
+		REPEAT
+		PRINTAT(X1, Y1); " +-+"	
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); " | |"
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); "C__|"
+	ENDIF
+	
+	// RIGHT LEG
+	IF (MISSED_LETTERS >= 6) THEN
+		X1 = X + 14
+		Y1 = Y + 13
+		FOR I = 1 TO 4 LOOP
+			PRINTAT(X1, Y1); "| | "
+			Y1 = Y1 + 1
+		REPEAT
+		PRINTAT(X1, Y1); "+-+ "	
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); "| | "
+		Y1 = Y1 + 1
+		PRINTAT(X1, Y1); "L__J"
+	ENDIF
+ENDPROC
+
+// Draw the letters display.
+//PARAMETERS:
+//X: X-COORDINATE TO START PRINTING AT
+//Y: Y-COORDINATE TO START PRINTING AT
+//W: How many letters to draw on a row.
+DEF PROC DRAW_LETTERS(X, Y, W)
+	LOCAL I, X1, Y1
+	PRINTAT(X, Y); "AVAILABLE LETTERS:"
+	X1 = X
+	Y1 = Y + 1
+	FOR I = 0 TO NUM_CHARS - 1 LOOP
+		IF FLAGS(I) = 0 THEN
+			PRINTAT(X1, Y1); CHR$(ASC("A") + I)
+		ELSE
+			PRINTAT(X1, Y1); "_"
+		ENDIF
+		X1 = X1 + 2
+		IF (I + 1) MOD W = 0 AND I > 0 THEN
+			X1 = X
+			Y1 = Y1 + 1
+		ENDIF
+	REPEAT		
+ENDPROC
+
+// Draw the status of the game so far. This includes the Hangman, the letters available, and the word guessed so far.
+DEF PROC DRAW_STATUS()
+	PROC DRAW_LETTERS(30, 3, 9)
+	PROC DRAW_WORD(30, 22, TARGET_WORD$)
+	PROC DRAW_HANGMAN(3, 3, NUM_MISSES)
+ENDPROC
+
+// Print out the word guessed so far. Guessed letters are shown, those that have not been guessed are replaced with underscores.
+//PARAMETERS:
+//X: X-COORDINATE TO START PRINTING AT
+//Y: Y-COORDINATE TO START PRINTING AT
+//WORD$: The word to print out.
+DEF PROC DRAW_WORD(X, Y, WORD$)
+	LOCAL CH$, I, IDX, X1
+	
+	PRINTAT(X, Y); "WORD TO GUESS:"
+	X1 = X
+	Y1 = Y + 1
+	FOR I = 0 TO LEN(WORD$) - 1 LOOP
+		CH$ = MID$(WORD$, I, 1)
+		IDX = ASC(CH$) - ASC("A")
+		IF FLAGS(IDX) = 0 THEN
+			PRINTAT(X1, Y1); "_"
+		ELSE
+			PRINTAT(X1, Y1); CH$
+		ENDIF
+		X1 = X1 + 1 
+	REPEAT
+ENDPROC
+
+// Check to see if a given letter is found within the target word.
+// PARAMETERS:
+// LETTER$: A single character string with the most recently guessed letter.
+DEF FN IS_MATCHING_LETTER(LETTER$)
+	LOCAL I, CH$, RET
+	
+	RET = FALSE
+	FOR I = 0 TO LEN(TARGET_WORD$) - 1 LOOP
+		CH$ = MID$(TARGET_WORD$, I, 1)
+		IF CH$ = LETTER$ THEN
+			RET = TRUE
+			BREAK
+		ENDIF
+	REPEAT
+=RET
+
+// Check to see if the word has been guessed. If so return TRUE, otherwise return FALSE.
+DEF FN IS_WORD_GUESSED()
+	LOCAL I, CH$, RET
+	
+	RET = TRUE
+	FOR I = 0 TO LEN(TARGET_WORD$) - 1 LOOP
+		CH$ = MID$(TARGET_WORD$, I, 1)
+		IF FLAGS(ASC(CH$) - ASC("A")) = 0 THEN
+			RET = FALSE
+			BREAK
+		ENDIF
+	REPEAT
+=RET
+
+// Function to trim whitespace from the beginning and end of a string. Whitespace mid string should not be touched.
+// Spaces, Tabs, Carriage Return, and Line Feed are all counted as White space.
+// PARAMETERS:
+// TEXT$: Input string to process
+DEF FN TRIM(TEXT$)
+	LOCAL RET$, CH$, I, J
+	RET$ = ""
+	J = LEN(TEXT$) - 1
+	LOOP
+		CH$ = MID$(TEXT$, J, 1)
+		//9 = TAB, 10 = LINE FEED, 13 = CARRIAGE RETURN
+		IF CH$ <> " " AND CH$ <> CHR$(9) AND CH$ <> CHR$(10) AND CH$ <> CHR$(13) THEN
+			BREAK
+		ELSE
+			J = J - 1
+			IF J < 0 THEN
+				BREAK
+			ENDIF
+		ENDIF		
+	REPEAT
+	
+	I = 0
+	LOOP
+		CH$ = MID$(TEXT$, I, 1)
+		//9 = TAB, 10 = LINE FEED, 13 = CARRIAGE RETURN
+		IF CH$ <> " " AND CH$ <> CHR$(9) AND CH$ <> CHR$(10) AND CH$ <> CHR$(13) THEN
+			BREAK
+		ELSE
+			I = I + 1
+			IF I >= LEN(TEXT$) THEN
+				BREAK
+			ENDIF
+		ENDIF		
+	REPEAT
+	
+	RET$ = MID$(TEXT$, I, J - I + 1)
+	
+=RET$
+
+// Load words from file. Each row is assumed to be a comma delimited list of words.
+// only characters A-Z and comma should be in the file all others will be ignored.
+// PARAMETERS:
+// FILENAME$: The name of the file to load.
+// MAX_WORDS: The maximum number of words that can be loaded (why no dynamic memory allocation FUZE)
+DEF FN LOAD_WORDS(FILENAME$, MAX_WORDS)
+	LOCAL NUM_WORDS, HANDLE, ROW$, CH$, WORD$, I, J
+	
+	NUM_WORDS = 0
+	HANDLE = OPEN(FILENAME$)
+	WHILE NOT EOF(HANDLE) LOOP
+		INPUT# HANDLE, ROW$
+		WORD$ = ""
+		FOR J = 0 TO LEN(ROW$) - 1 LOOP
+			CH$ = MID$(ROW$, J, 1)
+			IF CH$ >= "a" AND CH$ <= "z" THEN
+				CH$ = CHR$(ASC(CH$) - ASC("a") + ASC("A")) // Upper case the letter
+			ENDIF
+			IF (CH$ < "A" OR CH$ > "Z") AND CH$ <> "," THEN
+				CH$ = ""
+			ENDIF
+			IF CH$ = "," THEN
+				WORD$ = FN TRIM(WORD$)
+				IF LEN(WORD$) > 0 THEN
+					WORDS$(NUM_WORDS) = WORD$
+					NUM_WORDS = NUM_WORDS + 1
+					IF NUM_WORDS >= MAX_WORDS THEN
+						BREAK
+					ENDIF
+				ENDIF
+				WORD$ = ""
+			ELSE
+				WORD$ = WORD$ + CH$
+			ENDIF
+		REPEAT
+		WORD$ = FN TRIM(WORD$)
+		IF LEN(WORD$) > 0 AND NUM_WORDS < MAX_WORDS THEN
+			WORDS$(NUM_WORDS) = WORD$
+			NUM_WORDS = NUM_WORDS + 1
+		ENDIF
+	REPEAT
+	CLOSE(HANDLE)
+	
+=NUM_WORDS
+
+// Setup the display and variables for a new game.
+DEF PROC NEW_GAME()
+	LOCAL I
+	// Clear the guessed flags
+	FOR I = 0 TO NUM_CHARS - 1 LOOP
+		FLAGS(I) = 0
+	REPEAT
+
+	NUM_MISSES = 0
+	TARGET_WORD$ = WORDS$(RND(NUM_WORDS))
+	END_GAME = FALSE
+	CLS
+ENDPROC
+
+// Display a message and ask the user if the want to play again.
+// only Y and N are accepted as input.
+DEF FN PLAY_AGAIN(MESSAGE$)
+	LOCAL X, Y, BORDER$, MESSAGE_LEN
+	LOCAL PLAY_AGAIN$
+	LOCAL RET
+	
+	PLAY_AGAIN$ = "WOULD YOU LIKE TO PLAY AGAIN? (Y/N)"
+	MESSAGE_LEN = LEN(PLAY_AGAIN$)
+	IF LEN(MESSAGE$) > MESSAGE_LEN THEN
+		MESSAGE_LEN = LEN(MESSAGE$)
+	ENDIF
+	
+	IF LEN(MESSAGE$) < MESSAGE_LEN THEN
+		MESSAGE$ = MESSAGE$ + SPACE$(MESSAGE_LEN - LEN(MESSAGE$))
+	ENDIF
+	
+	IF LEN(PLAY_AGAIN$) < MESSAGE_LEN THEN
+		PLAY_AGAIN$ = PLAY_AGAIN$ + SPACE$(MESSAGE_LEN - LEN(PLAY_AGAIN$))
+	ENDIF
+	
+	
+	BORDER$ =""
+	FOR X = 1 TO MESSAGE_LEN + 2 LOOP
+		BORDER$ = BORDER$ + "="
+	REPEAT
+	
+	X = (TWIDTH - MESSAGE_LEN - 5) / 2
+	Y = (THEIGHT - 4) / 2
+	PAPER = BLUE
+	INK = WHITE
+	PRINTAT(X, Y); "+" + BORDER$ + "+"
+	PRINTAT(X, Y + 1); "| " + MESSAGE$ + " |"
+	PRINTAT(X, Y + 2); "| " + SPACE$(MESSAGE_LEN) + " |"
+	PRINTAT(X, Y + 3); "| " + PLAY_AGAIN$ + " |"
+	PRINTAT(X, Y + 4); "+" + BORDER$ + "+"
+	PAPER = BLACK
+	INK = WHITE
+	
+	LOOP
+		RET = INKEY
+	REPEAT UNTIL RET = ASC("Y") OR RET = ASC("y") OR RET = ASC("N") OR RET = ASC("n")
+	
+	IF RET = ASC("Y") OR RET = ASC("y") THEN
+		RET = TRUE
+	ELSE
+		RET = FALSE
+	ENDIF
+	
+=RET
+
+// Play a sad sound for when the user loses
+DEF PROC SOUND_LOSE()
+	LOCAL I
+	FOR I = 5000 TO 100 STEP -100 LOOP
+		TONE(1, 50, I, 0.01)
+	REPEAT
+ENDPROC
+
+// Play a happy sound for when the user wins
+DEF PROC SOUND_WIN()
+	LOCAL I
+	FOR I = 1 TO 3 LOOP
+		TONE(1, 50, 3000 + (100 * I), 0.08)
+		TONE(1, 50, 2500 + (100 * I), 0.08)
+	REPEAT
+ENDPROC    
