@@ -1,0 +1,18 @@
+/* CSS Styles */
+
+h1 {
+    margin: auto;
+    display: block;
+    text-align: center;
+    color: white;
+    background-color: darkblue;
+    border: 3px blue inset;
+    border-radius: 4px;
+}
+
+.game {
+    margin: auto;
+    display: block;
+    border: 0px;
+    padding: 0px;
+}

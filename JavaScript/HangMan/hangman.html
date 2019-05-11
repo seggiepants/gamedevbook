@@ -2,9 +2,11 @@
 <html>
     <head>
         <title>Hangman</title>
-        <script type="text/javascript" src="Hangman.js"></script>
+        <script src="hangman.js"></script>
+        <link rel="stylesheet" type="text/css" href="hangman.css">
     </head>
-    <body>
-        Hangman!
+    <body onload="setup()">
+        <h1 class="center">Hangman!</h1>
+        <canvas id="game" width="640" height="480" class="game"></canvas>
     </body>
 </html>
