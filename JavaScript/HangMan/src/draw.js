@@ -9,11 +9,6 @@ export function drawHangman(x, y, showHead, showBody, showRightArm, showLeftArm,
 
     // x, y is center of the top of the hat.
     let headX, headY;
-    // neck = settings.draw.size / 6    = 8
-    // head = settings.draw.size        = 48
-    // brim = settings.draw.size / 8    = 6
-    // hat settings.draw.size / 2       = 24
-    //                          = 212 / 48
     headX = x;
     headY = y + settings.draw.size / 6; // Add the neck
     headY = headY + settings.draw.size; // Add the head
