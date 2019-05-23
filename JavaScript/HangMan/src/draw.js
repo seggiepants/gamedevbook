@@ -14,6 +14,9 @@ export function drawHangman(x, y, showHead, showBody, showRightArm, showLeftArm,
     headY = headY + settings.draw.size; // Add the head
     headY = headY + settings.draw.size / 8; // Add the brim of the hat
     headY = headY + settings.draw.size / 2; // Add the hat
+
+    drawGallows(x, y, showHead, ctx);
+        
     if (showHead) {
         drawHead(headX, headY, isDead, ctx );
     }
@@ -37,6 +40,36 @@ export function drawHangman(x, y, showHead, showBody, showRightArm, showLeftArm,
     if (showLeftLeg) {
         drawLeftLeg(headX + settings.draw.size / 2, headY + (1.75 * settings.draw.size), ctx );
     }
+}
+
+function drawGallows(x, y, drawNoose, ctx) {
+    let nooseSize = settings.draw.size / 2;
+    let x1, y1, w, h;
+
+    if (drawNoose) {
+        ctx.strokeStyle = settings.draw.styleNoose;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y - nooseSize);;
+        ctx.stroke();
+    }
+
+    ctx.strokeStyle = settings.draw.styleGallows;
+    ctx.fillStyle = settings.draw.styleGallows;
+    w = settings.draw.size * 3;
+    h = settings.draw.size / 2;
+    y1 = y - nooseSize - h;
+    x1 = x - (settings.draw.size * 3 ) + settings.draw.size / 2;
+    ctx.fillRect(x1, y1, w, h);
+    w = settings.draw.size / 2;
+
+    h = settings.draw.size * 7
+    ctx.fillRect(x1, y1, w, h);
+    x1 = x1 - settings.draw.size / 2;
+    y1 = y1 + settings.draw.size * 7;
+    w = settings.draw.size * 5;
+    h = settings.draw.size / 2;
+    ctx.fillRect(x1, y1, w, h);
 }
 
 function drawHead(x, y, isDead, ctx ) {

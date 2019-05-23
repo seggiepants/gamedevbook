@@ -11,12 +11,14 @@ let canvasWidth;
 let canvasHeight;
 let ctx;
 let elements = [];
+let guesses = "";
+let numMisses = 0;
 let secretWord = "";
 
 export let game = {
     setup: function() {
         let e;
-        
+
         e = document.createElement("h1");
         e.innerHTML = "Hangman!";
         document.body.appendChild(e);
@@ -24,60 +26,38 @@ export let game = {
     
         e = document.createElement("canvas");
         e.id = "game";
-        e.width = 640;
-        e.height = 480;
+        e.width = settings.draw.size * 7;
+        e.height = settings.draw.size * 9;
         e.classList.add("game");
         document.body.appendChild(e);
         elements.push(e);
+
+        ctx = e.getContext("2d");
     
         canvasWidth = e.width;
         canvasHeight = e.height;
+
+        redrawHangman(ctx, 0);
          
-        // Blank the canvas
-        ctx = e.getContext("2d");
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvasWidth - 1, canvasHeight - 1);
-
-        // Draw the X.    
-        ctx.strokeStyle = "white";
-        ctx.moveTo(0, 0);
-        ctx.lineTo(canvasWidth - 1, canvasHeight - 1);
-
-        ctx.strokeStyle = "white";
-        ctx.moveTo(canvasWidth - 1, 0);
-        ctx.lineTo(0, canvasHeight - 1);
-        ctx.stroke();
-
-        let x = (canvasWidth - (6 * (settings.draw.size * 2.5))) / 2;
-        let y = 240
         
-        // None
-        drawHangman(x, y, false, false, false, false, false, false, ctx);
-        // Head
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, false, false, false, false, false, ctx);
-        // Body
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, true, false, false, false, false, ctx);
-        // Right Arm
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, true, true, false, false, false, ctx);
-        // Left Arm
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, true, true, true, false, false, ctx);
-        // Right Leg
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, true, true, true, true, false, ctx);
-        // Left Leg
-        x = x + (settings.draw.size * 2.5);
-        drawHangman(x, y, true, true, true, true, true, true, ctx);
-    
-        secretWord = randomWord();
         e = document.createElement("div");
         e.id = "target";
-        e.innerHTML = "WORD: " + secretWord;
+        e.innerHTML = "WORD: ";
         document.body.appendChild(e);
         elements.push(e);
+
+        for(let i = 0; i < 26; i++) {
+            e = document.createElement("button");
+            e.innerHTML = String.fromCharCode("A".charCodeAt(0) + i);
+            e.id = "btn_" + e.innerHTML;
+            e.className = "letter";
+
+            e.onclick = function(e) {
+                guess(e.target, ctx, e.target.innerHTML);
+            };
+            document.body.appendChild(e);
+            elements.push(e);
+        }
 
         e = document.createElement("button");
         e.innerHTML = "Menu";
@@ -87,6 +67,7 @@ export let game = {
         document.body.appendChild(e);
         elements.push(e);
 
+        resetGame()
 
     },
 
@@ -94,4 +75,54 @@ export let game = {
         elements.map(function (e) { document.body.removeChild(e); });
         elements = [];
     },
+}
+
+function redrawHangman(ctx, numMisses) {
+    // Blank the canvas
+    console.log(canvasWidth);
+    console.log(canvasHeight);
+    ctx.strokeStyle = settings.draw.styleBg;
+    ctx.fillStyle = settings.draw.styleBg;
+    ctx.fillRect(0, 0, canvasWidth - 1, canvasHeight - 1);
+
+    drawHangman(settings.draw.size * 4, settings.draw.size * 2, numMisses >= 1, numMisses >= 2, numMisses >= 3, numMisses >= 4, numMisses >= 5, numMisses >= 6, ctx);
+}
+
+function resetGame() {
+    numMisses = 0;
+    guesses = "";
+    secretWord = randomWord();
+
+    // Enable all buttons.
+    for(let i = 0; i < 26; i++) {
+        let e = document.getElementById("btn_" + String.fromCharCode("A".charCodeAt(0) + i));
+        e.disabled = false;
+    }
+}
+
+function guess(btn, ctx, char) {
+    if (guesses.indexOf(char) == -1) {
+        btn.disabled = true;
+        if(secretWord.indexOf(char) == -1) {
+            numMisses = numMisses + 1;
+        }
+        guesses = guesses + char;
+        updateWordDisplay();
+        redrawHangman(ctx, numMisses);
+    }
+}
+
+function updateWordDisplay() {
+    let displayWord = "";
+    let e = document.getElementById("target");
+
+    for(let i = 0; i < secretWord.length; i++) {
+        let ch = secretWord.substring(i, i + 1);
+        if (guesses.indexOf(ch) == -1) {
+            displayWord = displayWord + "_ ";
+        } else {
+            displayWord = displayWord + ch + " ";
+        }
+    }
+    e.innerHTML = "WORD: " + displayWord;
 }

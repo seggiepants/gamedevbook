@@ -16,3 +16,8 @@ h1 {
     border: 0px;
     padding: 0px;
 }
+
+.letter {
+    font-size: 200%;
+    margin: 8px;
+}
