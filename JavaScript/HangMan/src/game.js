@@ -58,7 +58,7 @@ export let game = {
             document.body.appendChild(e);
             elements.push(e);
         }
-        
+
         resetGame()
 
     },
@@ -71,8 +71,6 @@ export let game = {
 
 function redrawHangman(ctx, numMisses) {
     // Blank the canvas
-    console.log(canvasWidth);
-    console.log(canvasHeight);
     ctx.strokeStyle = settings.draw.styleBg;
     ctx.fillStyle = settings.draw.styleBg;
     ctx.fillRect(0, 0, canvasWidth - 1, canvasHeight - 1);

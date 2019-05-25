@@ -47,7 +47,7 @@ export let menu = {
     },
 
     cleanup: function() {
-        elements.map(function (e) { console.log(e); document.body.removeChild(e); });
+        elements.map(function (e) { document.body.removeChild(e); });
         elements = [];
     },
 }

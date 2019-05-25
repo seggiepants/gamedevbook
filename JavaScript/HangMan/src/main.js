@@ -20,10 +20,7 @@ export let setWords = function(newWords) {
 
 export let changeScene = function(newScene) {
     if (currentScene != null) {
-        console.log("Cleanup: " + currentScene);
         scene[currentScene].cleanup();
-    } else {
-        console.log("Cleanup skipped");
     }
     currentScene = newScene;
     scene[currentScene].setup();
