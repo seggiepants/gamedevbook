@@ -1,7 +1,7 @@
 import { settings } from "./settings.js";
 import { drawHangman } from "./draw.js";
 import { changeScene, randomWord } from "./main.js";
-
+import { popupYesNo } from "./popup.js";
 /*
     Name: game.js
     Description: Play hangman.
@@ -58,15 +58,7 @@ export let game = {
             document.body.appendChild(e);
             elements.push(e);
         }
-
-        e = document.createElement("button");
-        e.innerHTML = "Menu";
-        e.onclick = function() {
-            changeScene("menu");
-        };
-        document.body.appendChild(e);
-        elements.push(e);
-
+        
         resetGame()
 
     },
@@ -98,6 +90,9 @@ function resetGame() {
         let e = document.getElementById("btn_" + String.fromCharCode("A".charCodeAt(0) + i));
         e.disabled = false;
     }
+
+    redrawHangman(ctx, numMisses);
+    updateWordDisplay();    
 }
 
 function guess(btn, ctx, char) {
@@ -108,7 +103,17 @@ function guess(btn, ctx, char) {
         }
         guesses = guesses + char;
         updateWordDisplay();
-        redrawHangman(ctx, numMisses);
+        redrawHangman(ctx, numMisses);        
+        
+        if (isGameLost()) {
+            settings.soundLose.play();
+            popupYesNo("Game Over!", 
+            "I am sorry, but you lost!. The word was '" + secretWord + "'. Would you like to play again?", playAgain, mainMenu);
+        } else if (isGameWon()) {
+            settings.soundWin.play();
+            popupYesNo("You Win!", 
+            "You win, you correctly guessed that the word was '" + secretWord + "'. Would you like to play again?", playAgain, mainMenu);
+        }
     }
 }
 
@@ -125,4 +130,31 @@ function updateWordDisplay() {
         }
     }
     e.innerHTML = "WORD: " + displayWord;
+}
+
+function isGameLost() {
+    if (numMisses >= 6) {
+        return true;
+    }
+    return false;
+}
+
+function isGameWon() {
+
+    for(let i = 0; i < secretWord.length; i++) {
+        let ch = secretWord.substring(i, i + 1);
+        if (guesses.indexOf(ch) == -1) {
+            return false;
+        } 
+    }
+    return true;
+}
+
+
+function playAgain() {
+    resetGame();
+}
+
+function mainMenu() {
+    changeScene("menu");   
 }

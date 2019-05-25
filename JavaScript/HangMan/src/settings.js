@@ -1,4 +1,6 @@
 import wordList from "../data/wordlist.csv";
+import soundWin from "../data/youwin.mp3";
+import soundLose from "../data/gameover.mp3";
 
 export let settings = {
     draw: {
@@ -15,5 +17,7 @@ export let settings = {
         styleBoots: "saddlebrown",
         styleGallows: "#4b2a12",
     },
-    wordList:   wordList,
+    wordList: wordList,
+    soundWin: new Audio(soundWin),
+    soundLose: new Audio(soundLose),
 }

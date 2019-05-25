@@ -21,11 +21,13 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(csv|ico)$/,
+                test: /\.(csv|ico|mp3)$/,
                 use: [
                     {
                         loader: 'file-loader', 
-                        options: {},
+                        options: {
+                            name: '[path][name].[ext]',
+                        },
                     }
                 ]
             }

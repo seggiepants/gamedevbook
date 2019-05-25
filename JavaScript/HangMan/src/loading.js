@@ -22,6 +22,7 @@ export let loading = {
         elements.push(e);
 
         getFile(settings.wordList);
+        console.log(settings.soundWin);
 
     },
 

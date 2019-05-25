@@ -37,7 +37,8 @@ export let help = {
         elements.push(e);
 
         e = document.createElement("button");
-        e.innerHTML = "Menu";
+        e.innerHTML = "Back";
+        e.className = "buttonHelp";
         e.onclick = function() {
             changeScene("menu");
         };
